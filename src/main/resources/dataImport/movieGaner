@@ -1,0 +1,58 @@
+[
+  {
+    "code": "action",
+    "description": "Action films feature high-energy scenes, fights, and thrilling adventures."
+  },
+  {
+    "code": "adventure",
+    "description": "Adventure films tell stories of exploration, journeys, and dangerous quests."
+  },
+  {
+    "code": "comedy",
+    "description": "Comedy films offer humorous stories designed to make audiences laugh and entertain."
+  },
+  {
+    "code": "drama",
+    "description": "Drama films explore serious themes in depth and evoke emotional responses."
+  },
+  {
+    "code": "horror",
+    "description": "Horror films are designed to frighten and create suspense."
+  },
+  {
+    "code": "sci-fi",
+    "description": "Sci-fi films explore futuristic technology, space travel, and scientific concepts."
+  },
+  {
+    "code": "romance",
+    "description": "Romance films focus on love stories and emotional relationships."
+  },
+  {
+    "code": "thriller",
+    "description": "Thriller films deliver suspenseful, tension-filled moments."
+  },
+  {
+    "code": "fantasy",
+    "description": "Fantasy films include magic, mythical creatures, and imaginary worlds."
+  },
+  {
+    "code": "animation",
+    "description": "Animation films present hand-drawn or computer-generated characters and worlds."
+  },
+  {
+    "code": "documentary",
+    "description": "Documentary films examine real-life events, people, or topics."
+  },
+  {
+    "code": "musical",
+    "description": "Musical films integrate songs and dances as part of the storytelling."
+  },
+  {
+    "code": "mystery",
+    "description": "Mystery films revolve around unsolved puzzles and enigmatic events."
+  },
+  {
+    "code": "historical",
+    "description": "Historical films depict events, figures, or settings from the past."
+  }
+]

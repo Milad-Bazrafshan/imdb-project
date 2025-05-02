@@ -6,6 +6,9 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.clw.imdb.dto.enums.DataFileType;
+import org.clw.imdb.facade.DataSetFacade;
 import org.clw.imdb.services.DatasetService;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,25 +18,19 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/v1/data")
-@Tag(name = "Data Resource", description = "Data WebService")
+@Tag(name = "data-resource", description = "Data WebService")
 @SecurityScheme(
         type = SecuritySchemeType.HTTP,
         name = "Authorization Token",
         scheme = "bearer",
         in = SecuritySchemeIn.HEADER)
-//@PreAuthorize("hasAuthority('READ_PRIVILEGE') and hasRole('ADMIN')")
-//@SecurityRequirement(name = "Authorization")
+@RequiredArgsConstructor
 public class DataResource {
-    private final DatasetService datasetService;
+    private final DataSetFacade facade;
 
-    public DataResource(DatasetService datasetService) {
-        this.datasetService = datasetService;
-    }
-
-    //    @PreAuthorize(value = "hasAuthority('FULL_ADMIN') or hasAuthority('MEDIA')")
-    @PostMapping("/init")
-    public void initWithPath(@Valid @RequestParam(value = "filepath") String filePath) {
-        datasetService.loadData(filePath);
+    @PostMapping("/initData")
+    public void initRating(@Valid @RequestParam(value = "filepath") String filePath, @RequestParam(value = "type") DataFileType type) {
+        facade.initData(filePath, type);
     }
 }
 

@@ -1,30 +1,37 @@
-package org.clw.imdb.services;
+package org.clw.imdb.facade.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.clw.imdb.dto.enums.DataFileType;
+import org.clw.imdb.facade.DataSetFacade;
 import org.clw.imdb.model.ImdbRating;
 import org.clw.imdb.model.TitlePrincipals;
+import org.clw.imdb.services.RatingService;
+import org.clw.imdb.services.TitlePrincipalsService;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 
-@Service
 @Component
 @RequiredArgsConstructor
-public class DatasetService {
+public class DataSetFacadeImpl implements DataSetFacade {
     private final RatingService ratingService;
     private final TitlePrincipalsService titlePrincipalsService;
 
-    public void loadData(String filePath) {
-        File file = new File(filePath);
-        createRating(file);
+    @Override
+    public void initData(String filepath, DataFileType type) {
+        File file = new File(filepath);
+        switch (type) {
+            case RATING -> this.createRating(file);
+            case PRINCIPALS -> this.createPrincipals(file);
+        }
     }
 
+    @Override
     public void createRating(File inputFile) {
-        ArrayList<String> data = new ArrayList<>();
         try (BufferedReader TSVReader = new BufferedReader(new FileReader(inputFile))) {
             String line = null;
             while ((line = TSVReader.readLine()) != null) {
@@ -35,13 +42,14 @@ public class DatasetService {
                 rating.setNumVotes(itemList.get(2));
                 ratingService.createRating(rating);
             }
-        } catch (Exception e) {
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
             System.out.println("Something went wrong");
         }
     }
 
+    @Override
     public void createPrincipals(File inputFile) {
-        ArrayList<String> data = new ArrayList<>();
         try (BufferedReader TSVReader = new BufferedReader(new FileReader(inputFile))) {
             String line = null;
             while ((line = TSVReader.readLine()) != null) {
@@ -55,7 +63,8 @@ public class DatasetService {
                 dto.setCharacters(itemList.get(5));
                 titlePrincipalsService.createTitlePrincipals(dto);
             }
-        } catch (Exception e) {
+        } catch (Exception ignore) {
+            ignore.printStackTrace();
             System.out.println("Something went wrong");
         }
     }
