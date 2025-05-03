@@ -47,7 +47,7 @@ public class ActorsInfo extends BasicEntity {
     @Column
     private Integer rate;
 
-    /*@JoinColumn
-    @OneToMany
-    private List<String> otherWork;*/
+    @JoinColumn
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<MovieBasicInfo> movies;
 }

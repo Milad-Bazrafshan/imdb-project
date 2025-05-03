@@ -8,4 +8,12 @@ public class StringStaticUtil {
         public SchemeType() {
         }
     }
+
+    public static class ActorType {
+        public static final String Director = "Director";
+        public static final String Writer = "Writer";
+
+        public ActorType() {
+        }
+    }
 }

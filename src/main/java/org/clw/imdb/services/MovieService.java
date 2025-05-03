@@ -1,6 +1,8 @@
 package org.clw.imdb.services;
 
 import lombok.RequiredArgsConstructor;
+import org.clw.imdb.dto.actor.ActorsInfoFilterDto;
+import org.clw.imdb.model.ActorsInfo;
 import org.clw.imdb.model.MovieBasicInfo;
 import org.clw.imdb.model.MovieFeatureType;
 import org.clw.imdb.model.MovieGenre;
@@ -9,6 +11,7 @@ import org.clw.imdb.model.repository.MovieFeatureTypeRepository;
 import org.clw.imdb.model.repository.MovieGenreRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
