@@ -35,15 +35,15 @@ public class MovieBasicInfo extends BasicEntity {
     private String taglines;
 
     @JoinColumn(nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     private MovieGenre genre;
 
-    @JoinColumn(nullable = false)
-    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MovieFeature> features;
 
-    @JoinColumn(nullable = false)
-    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<MovieActor> actors;
 
     public void addActor(MovieActor movieActor) {

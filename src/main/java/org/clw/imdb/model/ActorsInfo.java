@@ -48,6 +48,6 @@ public class ActorsInfo extends BasicEntity {
     private Integer rate;
 
     @JoinColumn
-    @ManyToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     private List<MovieBasicInfo> movies;
 }

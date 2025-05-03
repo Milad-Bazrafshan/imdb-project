@@ -5,11 +5,14 @@ import org.apache.commons.lang3.ObjectUtils;
 import org.clw.imdb.dto.actor.ActorsInfoDto;
 import org.clw.imdb.dto.actor.ActorsInfoFilterDto;
 import org.clw.imdb.dto.actor.MovieActorDto;
+import org.clw.imdb.dto.movie.MovieFilterDto;
+import org.clw.imdb.dto.movie.TypeDto;
 import org.clw.imdb.exception.ActorNotFoundException;
 import org.clw.imdb.exception.ActorTypeException;
 import org.clw.imdb.exception.MovieNotFoundException;
 import org.clw.imdb.facade.ActorsFacade;
 import org.clw.imdb.mapper.ActorsInfoMapper;
+import org.clw.imdb.mapper.ActorsTypeMapper;
 import org.clw.imdb.model.ActorType;
 import org.clw.imdb.model.ActorsInfo;
 import org.clw.imdb.model.MovieActor;
@@ -26,6 +29,7 @@ public class ActorsFacadeImpl implements ActorsFacade {
     private final ActorsService actorsService;
     private final ActorsInfoMapper actorsInfoMapper;
     private final MovieService movieService;
+    private final ActorsTypeMapper actorsTypeMapper;
 
     @Override
     public MovieActorDto createMovieActor(MovieActorDto movieActorDto) {
@@ -43,6 +47,12 @@ public class ActorsFacadeImpl implements ActorsFacade {
         movieActor.setActorInfo(actorsInfo);
         actorsService.createMovieActor(movieActor);
         return movieActorDto;
+    }
+
+    @Override
+    public TypeDto createActorType(TypeDto typeDto) {
+        actorsService.createActorType(actorsTypeMapper.convert(typeDto));
+        return typeDto;
     }
 
     @Override
@@ -65,5 +75,13 @@ public class ActorsFacadeImpl implements ActorsFacade {
             throw new IllegalArgumentException("from and size in required");
 
         return actorsService.getActors(filter).stream().map(actorsInfoMapper::convert).toList();
+    }
+
+    @Override
+    public List<MovieBasicInfo> getMoviesByActor(MovieFilterDto filter) {
+        /*if (ObjectUtils.isEmpty(filter.getFrom()) || ObjectUtils.isEmpty(filter.getSize()))
+            throw new IllegalArgumentException("from and size in required");*/
+
+        return actorsService.getMoviesByActor(filter);
     }
 }

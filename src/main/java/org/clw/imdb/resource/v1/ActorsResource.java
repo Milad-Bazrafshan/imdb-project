@@ -11,8 +11,11 @@ import org.clw.imdb.dto.actor.ActorsInfoDto;
 import org.clw.imdb.dto.actor.ActorsInfoFilterDto;
 import org.clw.imdb.dto.actor.MovieActorDto;
 import org.clw.imdb.dto.enums.Gender;
+import org.clw.imdb.dto.movie.MovieFilterDto;
+import org.clw.imdb.dto.movie.TypeDto;
 import org.clw.imdb.facade.ActorsFacade;
 import org.clw.imdb.facade.MovieFacade;
+import org.clw.imdb.model.MovieBasicInfo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -30,7 +33,7 @@ public class ActorsResource {
     private final MovieFacade movieFacade;
     private final ActorsFacade actorsFacade;
 
-    @PostMapping("/create-movie")
+    @PostMapping("/create-movie-actor")
     public MovieActorDto createMovieActor(@Valid @RequestBody MovieActorDto dto) {
         return actorsFacade.createMovieActor(dto);
     }
@@ -38,6 +41,11 @@ public class ActorsResource {
     @PostMapping("/info")
     public ActorsInfoDto createActors(@Valid @RequestBody ActorsInfoDto dto) {
         return actorsFacade.createActorsInfo(dto);
+    }
+
+    @PostMapping("/type")
+    public TypeDto createActorType(@Valid @RequestBody TypeDto dto) {
+        return actorsFacade.createActorType(dto);
     }
 
     @PostMapping("/info/group")
@@ -68,6 +76,11 @@ public class ActorsResource {
                 .toAge(toAge)
                 .alive(alive)
                 .age(age).build());
+    }
+
+    @PostMapping("/by-actor")
+    public List<MovieBasicInfo> getMoviesByActor(@RequestBody MovieFilterDto filterDto) {
+        return actorsFacade.getMoviesByActor(filterDto);
     }
 }
 

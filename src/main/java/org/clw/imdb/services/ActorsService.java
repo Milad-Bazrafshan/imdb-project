@@ -10,6 +10,7 @@ import org.clw.imdb.model.*;
 import org.clw.imdb.model.repository.ActorTypeRepository;
 import org.clw.imdb.model.repository.ActorsInfoRepository;
 import org.clw.imdb.model.repository.MovieActorRepository;
+import org.clw.imdb.model.repository.MovieBasicInfoRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,6 +26,7 @@ public class ActorsService {
     private final ActorsInfoRepository actorsInfoRepository;
     private final MovieActorRepository movieActorRepository;
     private final ActorTypeRepository actorTypeRepository;
+    private final MovieBasicInfoRepository movieBasicInfoRepository;
 
     public ActorsInfo createActorsInfo(ActorsInfo actorsInfo) {
         return actorsInfoRepository.save(actorsInfo);
@@ -88,9 +90,9 @@ public class ActorsService {
         List<MovieBasicInfo> finalList = new ArrayList<>();
         MovieActorSpecDto specDto = getMoviesByActorSpec(filter);
 
-        List<ActorsInfo> actorsInfoList = actorsInfoRepository.findAll(Specification.allOf(specDto.getActorSpecs()));
+        List<MovieBasicInfo> movieBasicInfoList = movieBasicInfoRepository.findAll(Specification.allOf(specDto.getMovieSpecs()));
 
-        finalList.addAll(actorsInfoList.getFirst().getMovies());
+        finalList.addAll(movieBasicInfoList);
 
         return finalList;
     }
@@ -100,19 +102,14 @@ public class ActorsService {
         List<Specification<MovieBasicInfo>> movieSpec = new ArrayList<>();
         List<Specification<MovieActor>> movieActorSpecs = new ArrayList<>();
 
-        if (!ObjectUtils.isEmpty(filter.getActorFilter())) {
-            if (!ObjectUtils.isEmpty(filter.getActorFilter().getDirectorFirstName())) {
-                movieActorSpecs.add((root, query, criteriaBuilder) ->
-                        criteriaBuilder.like(root.get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME), filter.getActorFilter().getDirectorFirstName()));
-                movieActorSpecs.add((root, query, criteriaBuilder) ->
-                        criteriaBuilder.like(root.get(MovieActor_.TYPE).get(ActorType_.CODE), StringStaticUtil.ActorType.Director));
-            }
 
-            if (!ObjectUtils.isEmpty(filter.getActorFilter().getWriterFirstName())) {
-                movieActorSpecs.add((root, query, criteriaBuilder) ->
-                        criteriaBuilder.like(root.get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME), filter.getActorFilter().getWriterFirstName()));
-                movieActorSpecs.add((root, query, criteriaBuilder) ->
-                        criteriaBuilder.like(root.get(MovieActor_.TYPE).get(ActorType_.CODE), StringStaticUtil.ActorType.Writer));
+        if (!ObjectUtils.isEmpty(filter.getActorFilter())) {
+            if (!ObjectUtils.isEmpty(filter.getActorFilter().getDirectorFirstName()) || !ObjectUtils.isEmpty(filter.getActorFilter().getWriterFirstName())) {
+                movieSpec.add((root, query, criteriaBuilder) ->
+                        criteriaBuilder.or(criteriaBuilder.like(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME), "%" + filter.getActorFilter().getDirectorFirstName() + "%"), criteriaBuilder.like(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME), "%" + filter.getActorFilter().getWriterFirstName() + "%")));
+
+                movieSpec.add((root, query, criteriaBuilder) ->
+                        criteriaBuilder.or(criteriaBuilder.equal(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.TYPE).get(ActorType_.CODE), StringStaticUtil.ActorType.Director), criteriaBuilder.equal(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.TYPE).get(ActorType_.CODE), StringStaticUtil.ActorType.Writer)));
             }
         }
 
