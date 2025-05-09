@@ -25,6 +25,10 @@ public class MovieService {
         return movieBasicInfoRepository.save(movieBasicInfo);
     }
 
+    public MovieBasicInfo updateMovieBasicInfo(MovieBasicInfo movieBasicInfo) {
+        return movieBasicInfoRepository.save(movieBasicInfo);
+    }
+
     public MovieFeatureType createMovieFeatureType(MovieFeatureType movieFeatureType) {
         return movieFeatureTypeRepository.save(movieFeatureType);
     }
@@ -63,5 +67,9 @@ public class MovieService {
 
     public MovieBasicInfo getMovieBasicInfo(Long id) {
         return movieBasicInfoRepository.findById(id).orElse(null);
+    }
+
+    public List<MovieBasicInfo> getTopAverageRateByGenreAndYear(String genreTypeCode, String year) {
+        return movieBasicInfoRepository.findAllByGenre_CodeAndMovieYearOrderByAverageRateDesc(genreTypeCode, year);
     }
 }

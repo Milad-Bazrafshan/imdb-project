@@ -1,5 +1,6 @@
 package org.clw.imdb.facade;
 
+import org.clw.imdb.dto.movie.MovieBasicInfoDto;
 import org.clw.imdb.dto.movie.MovieDto;
 import org.clw.imdb.dto.movie.MovieFeatureTypeDto;
 import org.clw.imdb.dto.movie.MovieGenreDto;
@@ -18,4 +19,6 @@ public interface MovieFacade {
     void createGroupMovieFeatureType(List<MovieFeatureTypeDto> list);
     MovieFeatureTypeDto getMovieFeatureType(String code);
     List<MovieFeatureTypeDto> getAllMovieFeatureType();
+
+    List<MovieBasicInfoDto> getTopMovieByGenre(String genreTypeCode, String year);
 }

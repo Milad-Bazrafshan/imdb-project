@@ -1,0 +1,54 @@
+[
+  {
+    "title": "Film-test-01",
+    "description": "this is a film",
+    "storyline": "OkKala",
+    "taglines": "109000",
+    "genreTypeCode": "action",
+    "year": "2024",
+    "actors": [
+      {
+        "movieId": 0,
+        "actorId": 1,
+        "typeCode": "Writer"
+      },
+      {
+        "movieId": 0,
+        "actorId": 1,
+        "typeCode": "Director"
+      },
+      {
+        "movieId": 0,
+        "actorId": 2,
+        "typeCode": "Actor"
+      }
+    ],
+    "features": []
+  },
+  {
+    "title": "Film-test-02",
+    "description": "this is a film",
+    "storyline": "OkKala",
+    "taglines": "109000",
+    "genreTypeCode": "comedy",
+    "year": "2024",
+    "actors": [
+      {
+        "movieId": 0,
+        "actorId": 1,
+        "typeCode": "Writer"
+      },
+      {
+        "movieId": 0,
+        "actorId": 1,
+        "typeCode": "Director"
+      },
+      {
+        "movieId": 0,
+        "actorId": 2,
+        "typeCode": "Actor"
+      }
+    ],
+    "features": []
+  }
+]

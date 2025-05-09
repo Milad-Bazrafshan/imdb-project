@@ -2,17 +2,13 @@ package org.clw.imdb.facade;
 
 import org.clw.imdb.dto.actor.ActorsInfoDto;
 import org.clw.imdb.dto.actor.ActorsInfoFilterDto;
-import org.clw.imdb.dto.actor.MovieActorDto;
-import org.clw.imdb.dto.movie.MovieFeatureTypeDto;
-import org.clw.imdb.dto.movie.MovieFilterDto;
-import org.clw.imdb.dto.movie.MovieGenreDto;
-import org.clw.imdb.dto.movie.TypeDto;
-import org.clw.imdb.model.MovieBasicInfo;
+import org.clw.imdb.dto.actor.AddMovieActorDto;
+import org.clw.imdb.dto.movie.*;
 
 import java.util.List;
 
 public interface ActorsFacade {
-    MovieActorDto createMovieActor(MovieActorDto movieActorDto);
+    AddMovieActorDto createMovieActor(AddMovieActorDto addMovieActorDto);
 
     TypeDto createActorType(TypeDto typeDto);
 
@@ -22,5 +18,7 @@ public interface ActorsFacade {
 
     List<ActorsInfoDto> getActors(ActorsInfoFilterDto filter);
 
-    List<MovieBasicInfo> getMoviesByActor(MovieFilterDto filter);
+    List<MovieBasicInfoDto> getMoviesByActor(MovieFilterDto filter);
+
+    List<MovieBasicInfoDto> getMovieByCommonFactors(String fromActorTypeCode, String toActorTypeCode);
 }

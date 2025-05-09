@@ -1,8 +1,7 @@
 package org.clw.imdb.dto.movie;
 
 import lombok.Data;
-import org.clw.imdb.dto.actor.MovieActorDto;
-import org.clw.imdb.model.MovieGenre;
+import org.clw.imdb.dto.actor.AddMovieActorDto;
 
 import java.util.List;
 
@@ -13,6 +12,7 @@ public class MovieDto {
     private String storyline;
     private String taglines;
     private String genreTypeCode;
-    private List<MovieActorDto> actors;
+    private String year;
+    private List<AddMovieActorDto> actors;
     private List<MovieFeatureDto> features;
 }

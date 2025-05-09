@@ -1,0 +1,20 @@
+[
+  {
+    "firstName": "Reza",
+    "lastName": "Alipour",
+    "fatherName":  "AliMamali",
+    "gender": "MALE",
+    "alive":  true,
+    "height": "173",
+    "age":  54
+  },
+  {
+    "firstName": "Milad",
+    "lastName": "Bazrafshan",
+    "fatherName":  "Majid",
+    "gender": "MALE",
+    "alive":  true,
+    "height": "173",
+    "age":  21
+  }
+]

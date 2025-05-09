@@ -4,18 +4,19 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeIn;
 import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.annotation.Nonnull;
 import jakarta.annotation.Nullable;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.clw.imdb.dto.actor.ActorsInfoDto;
 import org.clw.imdb.dto.actor.ActorsInfoFilterDto;
-import org.clw.imdb.dto.actor.MovieActorDto;
+import org.clw.imdb.dto.actor.AddMovieActorDto;
 import org.clw.imdb.dto.enums.Gender;
+import org.clw.imdb.dto.movie.MovieBasicInfoDto;
 import org.clw.imdb.dto.movie.MovieFilterDto;
 import org.clw.imdb.dto.movie.TypeDto;
 import org.clw.imdb.facade.ActorsFacade;
 import org.clw.imdb.facade.MovieFacade;
-import org.clw.imdb.model.MovieBasicInfo;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -34,7 +35,7 @@ public class ActorsResource {
     private final ActorsFacade actorsFacade;
 
     @PostMapping("/create-movie-actor")
-    public MovieActorDto createMovieActor(@Valid @RequestBody MovieActorDto dto) {
+    public AddMovieActorDto createMovieActor(@Valid @RequestBody AddMovieActorDto dto) {
         return actorsFacade.createMovieActor(dto);
     }
 
@@ -79,8 +80,14 @@ public class ActorsResource {
     }
 
     @PostMapping("/by-actor")
-    public List<MovieBasicInfo> getMoviesByActor(@RequestBody MovieFilterDto filterDto) {
+    public List<MovieBasicInfoDto> getMoviesByActor(@RequestBody MovieFilterDto filterDto) {
         return actorsFacade.getMoviesByActor(filterDto);
+    }
+
+    @GetMapping("/by-common-factors")
+    public List<MovieBasicInfoDto> getMovieCommonFactorsByActorTypeCode(@Nonnull @RequestParam String fromActorTypeCode,
+                                                                        @Nonnull @RequestParam String toActorTypeCode) {
+        return actorsFacade.getMovieByCommonFactors(fromActorTypeCode, toActorTypeCode);
     }
 }
 

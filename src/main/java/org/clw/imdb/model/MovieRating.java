@@ -4,27 +4,26 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.mapstruct.ValueMapping;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Data
 @Entity
+@Table(name = "MOVIE_RATING")
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@SequenceGenerator(name = "SEQ_MOVIE_ACTOR", sequenceName = "SEQ_MOVIE_ACTOR")
-public class MovieActor extends BasicEntity {
+@SequenceGenerator(name = "SEQ_IMDB_RATING", sequenceName = "SEQ_IMDB_RATING")
+public class MovieRating extends BasicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SEQ_MOVIE_ACTOR", sequenceName = "SEQ_MOVIE_ACTOR")
+    @SequenceGenerator(name = "SEQ_IMDB_RATING", sequenceName = "SEQ_IMDB_RATING")
     @Column(name = "ID", nullable = false)
     private Long id;
 
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    private ActorsInfo actorInfo;
+    private MovieBasicInfo movie;
 
-    @JoinColumn(nullable = false)
-    @ManyToOne(fetch = FetchType.LAZY)
-    private ActorType type;
+    @Column(nullable = false)
+    private Integer rate;
 }

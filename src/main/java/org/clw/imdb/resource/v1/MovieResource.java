@@ -5,7 +5,9 @@ import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
 import io.swagger.v3.oas.annotations.security.SecurityScheme;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jdk.jfr.Description;
 import lombok.RequiredArgsConstructor;
+import org.clw.imdb.dto.movie.MovieBasicInfoDto;
 import org.clw.imdb.dto.movie.MovieDto;
 import org.clw.imdb.dto.movie.MovieFeatureTypeDto;
 import org.clw.imdb.dto.movie.MovieGenreDto;
@@ -29,6 +31,12 @@ public class MovieResource {
     @PostMapping("")
     public void createMovie(@Valid @RequestBody MovieDto dto) {
         movieFacade.createMovie(dto);
+    }
+
+    @GetMapping("/top/genreAndYear")
+    @Description("get top movie by genre and year and order by average rate")
+    public List<MovieBasicInfoDto> getTopByGenre(String genreTypeCode, String year) {
+        return movieFacade.getTopMovieByGenre(genreTypeCode, year);
     }
 
     @PostMapping("/genre")

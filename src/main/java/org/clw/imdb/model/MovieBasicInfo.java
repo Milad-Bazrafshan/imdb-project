@@ -11,6 +11,7 @@ import java.util.List;
 
 @Data
 @Entity
+@Table(name = "MOVIE_BASIC_INFO")
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -34,16 +35,22 @@ public class MovieBasicInfo extends BasicEntity {
     @Column(nullable = false)
     private String taglines;
 
+    @Column(nullable = true)
+    private String movieYear;
+
+    @Column(nullable = true)
+    private Integer averageRate;
+
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.EAGER)
     private MovieGenre genre;
 
-    @JoinColumn
+    /*@JoinColumn
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<MovieFeature> features;
+    private List<MovieFeature> features = new ArrayList<>();*/
 
     @JoinColumn
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MovieActor> actors;
 
     public void addActor(MovieActor movieActor) {
@@ -53,10 +60,10 @@ public class MovieBasicInfo extends BasicEntity {
         actors.add(movieActor);
     }
 
-    public void addMovieFeature(MovieFeature movieFeature) {
-        if (features == null) {
-            features = new ArrayList<>();
+    public void addRate(Integer rate) {
+        if (averageRate == null) {
+            averageRate = rate;
         }
-        features.add(movieFeature);
+        averageRate += rate;
     }
 }

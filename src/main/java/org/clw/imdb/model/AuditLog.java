@@ -4,25 +4,33 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.clw.imdb.dto.enums.Gender;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDate;
 
 @Data
 @Entity
-@Table(name = "IMDB_RATING")
 @AllArgsConstructor
 @NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@SequenceGenerator(name = "SEQ_IMDB_RATING", sequenceName = "SEQ_IMDB_RATING")
-public class ImdbRating extends BasicEntity {
+@SequenceGenerator(name = "SEQ_AUDIT_LOG", sequenceName = "SEQ_AUDIT_LOG")
+public class AuditLog extends BasicEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "SEQ_IMDB_RATING", sequenceName = "SEQ_IMDB_RATING")
+    @SequenceGenerator(name = "SEQ_AUDIT_LOG", sequenceName = "SEQ_AUDIT_LOG")
     @Column(name = "ID", nullable = false)
     private Long id;
+
     @Column(nullable = false)
-    private String tconst;
+    private String ipAddress;
+
     @Column(nullable = false)
-    private String averageRating;
+    private String uri;
+
     @Column(nullable = false)
-    private String numVotes;
+    private String method;
+
+    @Column(nullable = false)
+    private LocalDate date = LocalDate.now();
 }

@@ -37,10 +37,10 @@ public class ActorsService {
     }
 
     public Page<ActorsInfo> getActors(ActorsInfoFilterDto filter) {
-        return actorsInfoRepository.findAll(Specification.allOf(getImdbRatingSpec(filter)), PageRequest.of(filter.getFrom(), filter.getSize()));
+        return actorsInfoRepository.findAll(Specification.allOf(getActorsSpec(filter)), PageRequest.of(filter.getFrom(), filter.getSize()));
     }
 
-    private List<Specification<ActorsInfo>> getImdbRatingSpec(ActorsInfoFilterDto filter) {
+    private List<Specification<ActorsInfo>> getActorsSpec(ActorsInfoFilterDto filter) {
         List<Specification<ActorsInfo>> specifications = new ArrayList<>();
 
         if (!ObjectUtils.isEmpty(filter.getFirstName())) {
@@ -86,15 +86,14 @@ public class ActorsService {
         return actorTypeRepository.findByCode(code);
     }
 
+    public List<MovieBasicInfo> getMovieByCommonFactors(String fromActorTypeCode, String toActorTypeCode) {
+        return movieBasicInfoRepository.findAllByActors(fromActorTypeCode, toActorTypeCode);
+    }
+
     public List<MovieBasicInfo> getMoviesByActor(MovieFilterDto filter) {
-        List<MovieBasicInfo> finalList = new ArrayList<>();
         MovieActorSpecDto specDto = getMoviesByActorSpec(filter);
 
-        List<MovieBasicInfo> movieBasicInfoList = movieBasicInfoRepository.findAll(Specification.allOf(specDto.getMovieSpecs()));
-
-        finalList.addAll(movieBasicInfoList);
-
-        return finalList;
+        return movieBasicInfoRepository.findAll(Specification.allOf(specDto.getMovieSpecs()));
     }
 
     private MovieActorSpecDto getMoviesByActorSpec(MovieFilterDto filter) {
@@ -106,11 +105,35 @@ public class ActorsService {
         if (!ObjectUtils.isEmpty(filter.getActorFilter())) {
             if (!ObjectUtils.isEmpty(filter.getActorFilter().getDirectorFirstName()) || !ObjectUtils.isEmpty(filter.getActorFilter().getWriterFirstName())) {
                 movieSpec.add((root, query, criteriaBuilder) ->
-                        criteriaBuilder.or(criteriaBuilder.like(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME), "%" + filter.getActorFilter().getDirectorFirstName() + "%"), criteriaBuilder.like(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME), "%" + filter.getActorFilter().getWriterFirstName() + "%")));
+                        criteriaBuilder.and(
+                                criteriaBuilder.or(
+                                        criteriaBuilder.and(
+                                                criteriaBuilder.like(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME)
+                                                        , "%" + filter.getActorFilter().getDirectorFirstName() + "%"),
+                                                filter.getActorFilter().getAlive() ? criteriaBuilder.equal(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.ALIVE)
+                                                        , filter.getActorFilter().getAlive()) : null,
+                                                criteriaBuilder.equal(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.TYPE).get(ActorType_.CODE)
+                                                        , StringStaticUtil.ActorType.Director))
 
-                movieSpec.add((root, query, criteriaBuilder) ->
-                        criteriaBuilder.or(criteriaBuilder.equal(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.TYPE).get(ActorType_.CODE), StringStaticUtil.ActorType.Director), criteriaBuilder.equal(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.TYPE).get(ActorType_.CODE), StringStaticUtil.ActorType.Writer)));
+                                        , criteriaBuilder.and(
+                                                criteriaBuilder.like(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME)
+                                                        , "%" + filter.getActorFilter().getWriterFirstName() + "%"),
+                                                filter.getActorFilter().getAlive() ? criteriaBuilder.equal(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.ALIVE)
+                                                        , filter.getActorFilter().getAlive()) : null,
+                                                criteriaBuilder.equal(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.TYPE).get(ActorType_.CODE)
+                                                        , StringStaticUtil.ActorType.Writer)))
+
+                        ));
             }
+        }
+
+        if (!ObjectUtils.isEmpty(filter.getActorsName())) {
+            filter.getActorsName().forEach(item -> {
+                movieSpec.add((root, query, criteriaBuilder) ->
+                        criteriaBuilder.and(
+                                criteriaBuilder.like(root.get(MovieBasicInfo_.ACTORS).get(MovieActor_.ACTOR_INFO).get(ActorsInfo_.FIRST_NAME), "%" + item + "%")
+                        ));
+            });
         }
 
         return MovieActorSpecDto.builder()

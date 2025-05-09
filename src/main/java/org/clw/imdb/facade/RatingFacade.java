@@ -2,13 +2,13 @@ package org.clw.imdb.facade;
 
 import org.clw.imdb.dto.data.RatingDto;
 import org.clw.imdb.dto.filter.ImdbRatingFilterDto;
-import org.clw.imdb.model.ImdbRating;
+import org.clw.imdb.dto.rate.MovieRatingDto;
+import org.clw.imdb.model.MovieRating;
 
 import java.util.List;
 
 public interface RatingFacade {
-    RatingDto createRating(RatingDto rating);
-    List<RatingDto> getRating(ImdbRatingFilterDto filter);
-    List<ImdbRating> getRatingList(ImdbRatingFilterDto filter);
+    MovieRatingDto createRating(MovieRatingDto rating);
+    MovieRatingDto getMovieRate(Long movieId);
     RatingDto getRating(long id);
 }

@@ -2,16 +2,15 @@ package org.clw.imdb.facade.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.ObjectUtils;
-import org.clw.imdb.dto.actor.MovieActorDto;
-import org.clw.imdb.dto.movie.MovieDto;
-import org.clw.imdb.dto.movie.MovieFeatureDto;
-import org.clw.imdb.dto.movie.MovieFeatureTypeDto;
-import org.clw.imdb.dto.movie.MovieGenreDto;
+import org.clw.imdb.dto.actor.AddMovieActorDto;
+import org.clw.imdb.dto.movie.*;
 import org.clw.imdb.exception.ActorNotFoundException;
 import org.clw.imdb.exception.ActorTypeException;
 import org.clw.imdb.exception.FeaturesTypeNotFoundException;
 import org.clw.imdb.exception.MovieGenreNotFoundException;
 import org.clw.imdb.facade.MovieFacade;
+import org.clw.imdb.mapper.MovieBasicInfoMapper;
+import org.clw.imdb.mapper.MovieBasicInfoMapperImpl;
 import org.clw.imdb.mapper.MovieFeatureTypeMapper;
 import org.clw.imdb.mapper.MovieGenreMapper;
 import org.clw.imdb.model.*;
@@ -29,6 +28,7 @@ public class MovieFacadeImpl implements MovieFacade {
     private final MovieGenreMapper movieGenreMapper;
     private final MovieFeatureTypeMapper movieFeatureTypeMapper;
     private final ActorsService actorsService;
+    private final MovieBasicInfoMapper movieBasicInfoMapper;
 
     @Override
     public void createMovie(MovieDto movieDto) {
@@ -37,6 +37,7 @@ public class MovieFacadeImpl implements MovieFacade {
         basicInfo.setDescription(movieDto.getDescription());
         basicInfo.setTaglines(movieDto.getTaglines());
         basicInfo.setStoryline(movieDto.getStoryline());
+        basicInfo.setMovieYear(movieDto.getYear());
 
         MovieGenre movieGenre = movieService.getMovieGenre(movieDto.getGenreTypeCode());
         if (ObjectUtils.isEmpty(movieGenre)) {
@@ -49,14 +50,14 @@ public class MovieFacadeImpl implements MovieFacade {
             basicInfo.setActors(this.checkAndGetActorList(movieDto.getActors()));
         }
 
-        if (!ObjectUtils.isEmpty(movieDto.getFeatures())) {
+/*        if (!ObjectUtils.isEmpty(movieDto.getFeatures())) {
             basicInfo.setFeatures(this.checkAndGetFeaturesList(movieDto.getFeatures()));
-        }
+        }*/
 
         movieService.createMovieBasicInfo(basicInfo);
     }
 
-    private List<MovieActor> checkAndGetActorList(List<MovieActorDto> actorsList) {
+    private List<MovieActor> checkAndGetActorList(List<AddMovieActorDto> actorsList) {
         List<MovieActor> finalList = new ArrayList<>();
         actorsList.forEach(actor -> {
             MovieActor movieActor = new MovieActor();
@@ -135,5 +136,10 @@ public class MovieFacadeImpl implements MovieFacade {
     @Override
     public List<MovieFeatureTypeDto> getAllMovieFeatureType() {
         return movieService.getAllMovieFeatureType().stream().map(movieFeatureTypeMapper::convert).toList();
+    }
+
+    @Override
+    public List<MovieBasicInfoDto> getTopMovieByGenre(String genreTypeCode, String year) {
+        return movieService.getTopAverageRateByGenreAndYear(genreTypeCode, year).stream().map(movieBasicInfoMapper::convert).toList();
     }
 }

@@ -1,62 +1,96 @@
 package org.clw.imdb.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
-import org.clw.imdb.model.ImdbRating;
-import org.clw.imdb.model.TitlePrincipals;
+import lombok.SneakyThrows;
+import org.clw.imdb.dto.movie.MovieBasicInfoDto;
+import org.clw.imdb.model.*;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 
-@Service
 @Component
 @RequiredArgsConstructor
+@Configuration
 public class DatasetService {
-    private final RatingService ratingService;
-    private final TitlePrincipalsService titlePrincipalsService;
+    private final MovieService movieService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
+    private final ActorsService actorsService;
+    @Value("classpath:dataImport/movieGenre.json")
+    Resource genreJsonFile;
+    @Value("classpath:dataImport/actorType.json")
+    Resource actorTypeJsonFile;
+    @Value("classpath:dataImport/actorInfo.json")
+    Resource actorsJsonFile;
+    @Value("classpath:dataImport/movies.json")
+    Resource moviesJsonFile;
 
-    public void loadData(String filePath) {
-        File file = new File(filePath);
-        createRating(file);
+    @Bean
+    public String loadData() {
+        importGenre();
+        importActorType();
+        importActors();
+//        importMovies();
+        return "";
     }
 
-    public void createRating(File inputFile) {
-        ArrayList<String> data = new ArrayList<>();
-        try (BufferedReader TSVReader = new BufferedReader(new FileReader(inputFile))) {
-            String line = null;
-            while ((line = TSVReader.readLine()) != null) {
-                List<String> itemList = Arrays.stream(line.split("\t")).toList();
-                ImdbRating rating = new ImdbRating();
-                rating.setTconst(itemList.get(0));
-                rating.setAverageRating(itemList.get(1));
-                rating.setNumVotes(itemList.get(2));
-                ratingService.createRating(rating);
-            }
+    @SneakyThrows
+    private void importActorType() {
+        try (InputStream values = new FileInputStream(actorTypeJsonFile.getFile())) {
+            List<ActorType> genreList = objectMapper.readValue(values, new TypeReference<>() {
+            });
+            genreList.forEach(item -> {
+                actorsService.createActorType(item);
+            });
         } catch (Exception e) {
             System.out.println("Something went wrong");
         }
     }
 
-    public void createPrincipals(File inputFile) {
-        ArrayList<String> data = new ArrayList<>();
-        try (BufferedReader TSVReader = new BufferedReader(new FileReader(inputFile))) {
-            String line = null;
-            while ((line = TSVReader.readLine()) != null) {
-                List<String> itemList = Arrays.stream(line.split("\t")).toList();
-                TitlePrincipals dto = new TitlePrincipals();
-                dto.setTconst(itemList.get(0));
-                dto.setOrdering(Integer.valueOf(itemList.get(1)));
-                dto.setNconst(itemList.get(2));
-                dto.setCategory(itemList.get(3));
-                dto.setJobName(itemList.get(4));
-                dto.setCharacters(itemList.get(5));
-                titlePrincipalsService.createTitlePrincipals(dto);
-            }
+    @SneakyThrows
+    private void importActors() {
+        try (InputStream values = new FileInputStream(actorsJsonFile.getFile())) {
+            List<ActorsInfo> genreList = objectMapper.readValue(values, new TypeReference<>() {
+            });
+            genreList.forEach(item -> {
+                actorsService.createActorsInfo(item);
+            });
         } catch (Exception e) {
             System.out.println("Something went wrong");
         }
     }
+
+    @SneakyThrows
+    private void importGenre() {
+        try (InputStream values = new FileInputStream(genreJsonFile.getFile())) {
+            List<MovieGenre> genreList = objectMapper.readValue(values, new TypeReference<>() {
+            });
+            genreList.forEach(item -> {
+                movieService.createMovieGenre(item);
+            });
+        } catch (Exception e) {
+            System.out.println("Something went wrong");
+        }
+    }
+
+    /*@SneakyThrows
+    private void importMovies() {
+        try (InputStream values = new FileInputStream(moviesJsonFile.getFile())) {
+            List<MovieBasicInfoDto> genreList = objectMapper.readValue(values, new TypeReference<>() {
+            });
+            genreList.forEach(item -> {
+                movieService.createMovieBasicInfo(item);
+            });
+        } catch (Exception e) {
+            System.out.println("Something went wrong");
+        }
+    }*/
 }

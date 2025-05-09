@@ -26,10 +26,13 @@ spring:
     console:
       enabled: true
 
-springdoc:
-  swagger-ui:
-  api-docs:
-    enabled: true
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  springdoc:
+    api-docs:
+      enabled: true
 
 application:
   version: 1.0
